@@ -64,7 +64,7 @@ resource "azurerm_linux_virtual_machine" "vm" {
   size                = "Standard_D2s_v3"
 
   admin_username                  = "azureuser"
-  admin_password                  = "ChangeMe12345!"
+  admin_password                  = var.admin_password
   disable_password_authentication = false
 
   network_interface_ids = [
