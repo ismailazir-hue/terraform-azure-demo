@@ -11,13 +11,11 @@ provider "azurerm" {
   features {}
 }
 
-# Resource Group
 resource "azurerm_resource_group" "rg" {
   name     = "rg-github-actions-demo"
   location = "West Europe"
 }
 
-# Virtual Network
 resource "azurerm_virtual_network" "vnet" {
   name                = "vnet-github-actions"
   address_space       = ["10.0.0.0/16"]
@@ -25,7 +23,6 @@ resource "azurerm_virtual_network" "vnet" {
   resource_group_name = azurerm_resource_group.rg.name
 }
 
-# Subnet
 resource "azurerm_subnet" "subnet" {
   name                 = "subnet-vm"
   resource_group_name  = azurerm_resource_group.rg.name
@@ -33,7 +30,6 @@ resource "azurerm_subnet" "subnet" {
   address_prefixes     = ["10.0.1.0/24"]
 }
 
-# Public IP
 resource "azurerm_public_ip" "public_ip" {
   name                = "pip-vm"
   location            = azurerm_resource_group.rg.location
@@ -42,7 +38,6 @@ resource "azurerm_public_ip" "public_ip" {
   sku                 = "Standard"
 }
 
-# Network Interface
 resource "azurerm_network_interface" "nic" {
   name                = "nic-vm"
   location            = azurerm_resource_group.rg.location
@@ -56,14 +51,13 @@ resource "azurerm_network_interface" "nic" {
   }
 }
 
-# Virtual Machine
 resource "azurerm_linux_virtual_machine" "vm" {
   name                = "vm-github-actions"
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
   size                = "Standard_D2s_v3"
 
-  admin_username                  = "azureuser"
+  admin_username                  = var.admin_username
   admin_password                  = var.admin_password
   disable_password_authentication = false
 
@@ -76,10 +70,10 @@ resource "azurerm_linux_virtual_machine" "vm" {
     storage_account_type = "Standard_LRS"
   }
 
- source_image_reference {
-  publisher = "Canonical"
-  offer     = "ubuntu-24_04-lts"
-  sku       = "server"
-  version   = "latest"
-}
+  source_image_reference {
+    publisher = "Canonical"
+    offer     = "ubuntu-24_04-lts"
+    sku       = "server"
+    version   = "latest"
+  }
 }
